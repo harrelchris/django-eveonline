@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Django Eve Online{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h1>Django Eve Online</h1>
+    <p>An example using Django Eve Online to easily create authenticated applications for Eve using Django.</p>
+    <p><a href="{% url 'login' %}">Log in here</a></p>
+  </div>
+{% endblock %}

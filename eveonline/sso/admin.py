@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from sso.models import Token
+from eveonline.sso.models import Token
 
 
 class TokenAdmin(admin.ModelAdmin):

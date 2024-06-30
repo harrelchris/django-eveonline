@@ -18,6 +18,7 @@ TOKEN_URL = getattr(settings, "SSO_TOKEN_URL", "https://login.eveonline.com/v2/o
 def get_authorization_url(request: HttpRequest) -> str:
     state = secrets.token_urlsafe(16)
     request.session["state"] = state
+    request.session.modified = True
     params = {
         "client_id": settings.SSO_CLIENT_ID,
         "redirect_uri": settings.SSO_CALLBACK_URL,

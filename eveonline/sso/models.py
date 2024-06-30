@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-from sso.services import refresh_oauth_token
+from eveonline.sso.services import refresh_oauth_token
 
 
 class Token(models.Model):

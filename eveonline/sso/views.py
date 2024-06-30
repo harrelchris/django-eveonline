@@ -5,8 +5,8 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import RedirectView
 
-from sso import services
-from sso.models import Token
+from eveonline.sso import services
+from eveonline.sso.models import Token
 
 User = get_user_model()
 
