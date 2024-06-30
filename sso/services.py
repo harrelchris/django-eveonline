@@ -1,11 +1,32 @@
 import base64
 import json
+import secrets
 import urllib.parse
 import urllib.request
 
 from django.conf import settings
+from django.contrib.auth import get_user_model, login, logout
 from django.http import HttpRequest
 from django.utils import timezone
+
+User = get_user_model()
+
+AUTHORIZATION_URL = getattr(settings, "SSO_AUTHORIZATION_URL", "https://login.eveonline.com/v2/oauth/authorize/")
+TOKEN_URL = getattr(settings, "SSO_TOKEN_URL", "https://login.eveonline.com/v2/oauth/token")
+
+
+def get_authorization_url(request: HttpRequest) -> str:
+    state = secrets.token_urlsafe(16)
+    request.session["state"] = state
+    params = {
+        "client_id": settings.SSO_CLIENT_ID,
+        "redirect_uri": settings.SSO_CALLBACK_URL,
+        "response_type": "code",
+        "scope": settings.SSO_SCOPES,
+        "state": state,
+    }
+    query_string = urllib.parse.urlencode(params)
+    return f"{AUTHORIZATION_URL}?{query_string}"
 
 
 def validate_callback(request: HttpRequest) -> bool:
@@ -44,7 +65,7 @@ def _request_access_token(payload: dict) -> dict:
         data=payload,
         headers=_get_basic_authorization_header(),
         method="POST",
-        url=settings.SSO_TOKEN_URL,
+        url=TOKEN_URL,
     )
     response = urllib.request.urlopen(request)
     content_bytes = response.read()
@@ -53,7 +74,7 @@ def _request_access_token(payload: dict) -> dict:
 
 
 def _get_basic_authorization_header() -> dict:
-    credentials = f"{settings.ESI_CLIENT_ID}:{settings.ESI_SECRET_KEY}".encode("utf-8")
+    credentials = f"{settings.SSO_CLIENT_ID}:{settings.SSO_SECRET_KEY}".encode("utf-8")
     credentials_b64 = base64.urlsafe_b64encode(credentials).decode("utf-8")
     basic_authorization_string = f"Basic {credentials_b64}"
     return {

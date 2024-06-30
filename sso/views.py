@@ -1,6 +1,3 @@
-import secrets
-import urllib.parse
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
@@ -16,17 +13,7 @@ User = get_user_model()
 
 class AuthorizeView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
-        state = secrets.token_urlsafe(16)
-        self.request.session["state"] = state
-        params = {
-            "client_id": settings.ESI_CLIENT_ID,
-            "redirect_uri": settings.ESI_CALLBACK_URL,
-            "response_type": "code",
-            "scope": settings.ESI_SCOPES,
-            "state": state,
-        }
-        query_string = urllib.parse.urlencode(params)
-        return f"{settings.SSO_AUTHORIZATION_URL}?{query_string}"
+        return services.get_authorization_url(request=self.request)
 
 
 class CallbackView(RedirectView):

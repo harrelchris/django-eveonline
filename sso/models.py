@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-from sso import services
+from sso.services import refresh_oauth_token
 
 
 class Token(models.Model):
@@ -19,7 +19,7 @@ class Token(models.Model):
         return self.expiration <= timezone.now()
 
     def _refresh_access_token(self):
-        oauth_token = services.refresh_oauth_token(refresh_token=self.refresh_token)
+        oauth_token = refresh_oauth_token(refresh_token=self.refresh_token)
         self.access_token = oauth_token["access_token"]
         self.expiration = oauth_token["expiration"]
         self.save()
