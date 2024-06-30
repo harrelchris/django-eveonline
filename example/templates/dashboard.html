@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h1>Dashboard</h1>
+    <p>Welcome, {{ user.username }}</p>
+    <a href="{% url 'sso:logout' %}">Log Out</a>
+  </div>
+{% endblock %}
