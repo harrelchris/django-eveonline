@@ -3,3 +3,4 @@ django
 django-environ
 flake8
 isort
+pandas
